@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'sequel/extensions/connection_guard/configuration_error'
-require 'sequel/extensions/connection_guard/connection_guard'
-require 'sequel/extensions/connection_guard/database_guard'
-require 'sequel/extensions/connection_guard/dataset'
-require 'sequel/extensions/connection_guard/executor'
-require 'sequel/extensions/connection_guard/model_guard'
+require "sequel/extensions/connection_guard/configuration_error"
+require "sequel/extensions/connection_guard/connection_guard"
+require "sequel/extensions/connection_guard/database_guard"
+require "sequel/extensions/connection_guard/dataset"
+require "sequel/extensions/connection_guard/executor"
+require "sequel/extensions/connection_guard/model_guard"
 
 # @api public
 # @since 0.1.0

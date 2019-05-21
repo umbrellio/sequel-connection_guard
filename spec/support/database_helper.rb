@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class DatabaseHelper
-  DATABASE_URL = ENV['DB_URL'] || 'postgres://localhost/sequel_connection_guard'
+  DATABASE_URL = ENV["DB_URL"] || "postgres://localhost/sequel_connection_guard"
 
   def initialize(handle)
     @handle = handle
     @connections = []
     @max_connections = handle.force_execute do |db|
-      db.fetch('SHOW max_connections').first.fetch(:max_connections).to_i
+      db.fetch("SHOW max_connections").first.fetch(:max_connections).to_i
     end
   end
 

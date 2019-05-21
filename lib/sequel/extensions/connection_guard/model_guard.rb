@@ -92,7 +92,7 @@ module Sequel
           end
 
           @interfaces.each do |klass|
-            klass.const_set('RawModel', @model)
+            klass.const_set("RawModel", @model)
           end
         else
           @model.dataset = connection[@table_name]

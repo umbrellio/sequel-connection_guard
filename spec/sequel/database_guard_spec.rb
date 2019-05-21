@@ -1,44 +1,44 @@
 # frozen_string_literal: true
 
 RSpec.describe Sequel::DatabaseGuard do
-  describe '#safe_execute' do
-    context 'database is up' do
+  describe "#safe_execute" do
+    context "database is up" do
       before do
         DB.safe_execute do
-          alive { |db| db[:users].insert(email: 'shabolda@example.com', password: '12345') }
+          alive { |db| db[:users].insert(email: "shabolda@example.com", password: "12345") }
         end
       end
 
-      it 'throws a configuration error if no `alive` handler is provided' do
+      it "throws a configuration error if no `alive` handler is provided" do
         expect do
           DB.safe_execute {}
         end.to raise_error(
           Sequel::ConnectionGuard::ConfigurationError,
-          '`alive` handler is required!',
+          "`alive` handler is required!",
         )
       end
 
-      it 'runs queries' do
+      it "runs queries" do
         users = DB.safe_execute do
           alive { |db| db[:users].all }
         end
 
         expect(users).to contain_exactly(
           a_hash_including(
-            email: 'shabolda@example.com', password: '12345',
+            email: "shabolda@example.com", password: "12345",
           ),
         )
       end
 
-      it 'reconnects when possible' do
+      it "reconnects when possible" do
         DB_HELPER.turn_off
 
         result = DB.safe_execute do
           alive { |db| db[:users].all }
-          dead { 'error' }
+          dead { "error" }
         end
 
-        expect(result).to eq('error')
+        expect(result).to eq("error")
 
         DB_HELPER.turn_on
 
@@ -48,18 +48,18 @@ RSpec.describe Sequel::DatabaseGuard do
 
         expect(result).to contain_exactly(
           a_hash_including(
-            email: 'shabolda@example.com', password: '12345',
+            email: "shabolda@example.com", password: "12345",
           ),
         )
       end
     end
 
-    context 'database is down' do
+    context "database is down" do
       before { DB_HELPER.turn_off }
 
       after { DB_HELPER.turn_on }
 
-      it 'does nothing if no `dead` handler is specified' do
+      it "does nothing if no `dead` handler is specified" do
         expect do
           DB.safe_execute do
             alive { |db| db[:users].all }
@@ -67,32 +67,32 @@ RSpec.describe Sequel::DatabaseGuard do
         end.not_to raise_error
       end
 
-      it 'invokes `dead` handler if specified' do
+      it "invokes `dead` handler if specified" do
         result = DB.safe_execute do
           alive { |db| db[:users].all }
 
-          dead { 'connection failure' }
+          dead { "connection failure" }
         end
 
-        expect(result).to eq('connection failure')
+        expect(result).to eq("connection failure")
       end
     end
   end
 
-  describe '#force_execute' do
-    context 'database is up' do
+  describe "#force_execute" do
+    context "database is up" do
       before do
         DB.force_execute do |db|
-          db[:users].insert(email: 'shabolda@example.com', password: '12345')
+          db[:users].insert(email: "shabolda@example.com", password: "12345")
         end
       end
 
-      it 'executes the query' do
+      it "executes the query" do
         result = DB.force_execute { |db| db[:users].first }
-        expect(result).to include(email: 'shabolda@example.com', password: '12345')
+        expect(result).to include(email: "shabolda@example.com", password: "12345")
       end
 
-      it 'reconnects when possible' do
+      it "reconnects when possible" do
         DB_HELPER.turn_off
 
         expect do
@@ -105,18 +105,18 @@ RSpec.describe Sequel::DatabaseGuard do
 
         expect(result).to contain_exactly(
           a_hash_including(
-            email: 'shabolda@example.com', password: '12345',
+            email: "shabolda@example.com", password: "12345",
           ),
         )
       end
     end
 
-    context 'database is down' do
+    context "database is down" do
       before { DB_HELPER.turn_off }
 
       after { DB_HELPER.turn_on }
 
-      it 'fails to connect' do
+      it "fails to connect" do
         expect do
           DB.force_execute { |db| db[:users].all }
         end.to raise_error(Sequel::DatabaseConnectionError)
@@ -124,16 +124,16 @@ RSpec.describe Sequel::DatabaseGuard do
     end
   end
 
-  describe '#raw_handle' do
+  describe "#raw_handle" do
     let(:handle) { DB.raw_handle }
 
-    context 'database is up' do
-      it 'returns a raw connection handle' do
+    context "database is up" do
+      it "returns a raw connection handle" do
         expect(handle[:users].count).to eq(0)
       end
     end
 
-    context 'database is down' do
+    context "database is down" do
       before { DB_HELPER.turn_off }
 
       after { DB_HELPER.turn_on }

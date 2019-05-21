@@ -1,4 +1,5 @@
 inherit_gem:
+  rubocop-config-umbrellio: lib/rubocop.yml
   armitage-rubocop:
     - lib/rubocop.general.yml
     - lib/rubocop.rspec.yml
