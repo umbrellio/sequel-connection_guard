@@ -29,8 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "armitage-rubocop", "~> 0.12"
   spec.add_development_dependency "rubocop-config-umbrellio", "0.69.0rc1"
-  spec.add_development_dependency "pg"
-  spec.add_development_dependency "pry"
-  spec.add_development_dependency "coveralls"
-  spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "pg", "~> 1.0"
+  spec.add_development_dependency "pry", "~> 0.12"
+  spec.add_development_dependency "coveralls", "~> 0.8"
+  spec.add_development_dependency "simplecov", "~> 0.16"
 end
