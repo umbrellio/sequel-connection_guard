@@ -24,6 +24,8 @@ module Sequel
       # @since 0.1.0
       def force_execute(&_block)
         establish_connection if @connection.nil?
+        raise Sequel::DatabaseConnectionError unless connection_established?
+
         yield @connection
       rescue Sequel::DatabaseConnectionError => error
         @connection = nil

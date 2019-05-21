@@ -76,6 +76,16 @@ RSpec.describe Sequel::DatabaseGuard do
 
         expect(result).to eq("connection failure")
       end
+
+      it "does not invoke `alive` handler" do
+        alive_spy = spy
+
+        DB.safe_execute do
+          alive { |_| alive_spy.call }
+        end
+
+        expect(alive_spy).not_to have_received(:call)
+      end
     end
   end
 

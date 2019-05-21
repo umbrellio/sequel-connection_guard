@@ -109,6 +109,16 @@ RSpec.describe "model guard" do
 
         expect(result).to eq("kekpek")
       end
+
+      it "does not invoke `alive` handler" do
+        alive_spy = spy
+
+        User.safe_execute do
+          alive { |_| alive_spy.call }
+        end
+
+        expect(alive_spy).not_to have_received(:call)
+      end
     end
   end
 
