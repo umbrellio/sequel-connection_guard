@@ -87,7 +87,7 @@ Note that this will return `nil` if the database is unreachable.
 A model guard is what you use to access a model handle. To create a model guard:
 ```ruby
 # NOTE: `DB` must be an instance of Sequel::DatabaseGuard
-User = Sequel::ModelGuard(DB[:users]) do
+UserGuard = Sequel::ModelGuard(DB[:users]) do
   one_to_many :cookies, class: 'Cookie::RawModel'
 
   def admin?
