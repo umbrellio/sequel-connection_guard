@@ -20,7 +20,7 @@ require "bundler/setup"
 require "sequel"
 require "pry"
 
-Dir["#{__dir__}/support/**/*.rb"].each { |f| require f }
+require_relative "support/database.rb"
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = ".rspec_status"
