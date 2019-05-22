@@ -42,6 +42,14 @@ A database guard is what you use to access a database handle. First, you need to
 ::DB = Sequel::DatabaseGuard.new('postgres://localhost/mydb')
 ```
 
+You can perform additional actions upon DB initialization, such as enabling Sequel plugins:
+```ruby
+::DB = Sequel::DatabaseGuard.new('postgres://localhost/mydb') do |db|
+  db.extension :advisory_locking
+  db.extension :pg_json
+end
+```
+
 There are two ways of using the guard.
 
 #### Safe access
