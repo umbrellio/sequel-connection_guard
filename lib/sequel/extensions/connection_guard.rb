@@ -57,7 +57,13 @@ module Sequel
         model.force_execute(&block)
       end
 
-      model.register_interface(klass)
+      klass.define_singleton_method(:const_missing) do |const_name|
+        if const_name == :RawModel
+          model.raw_model
+        else
+          super(const_name)
+        end
+      end
     end
   end
   # rubocop:enable Naming/MethodName

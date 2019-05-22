@@ -166,4 +166,57 @@ RSpec.describe "model guard" do
       end
     end
   end
+
+  describe "::RawModel" do
+    context "connection is up" do
+      it "returns the model" do
+        expect(User::RawModel.ancestors).to include(Sequel::Model)
+      end
+
+      it "behaves normally if constant is missing" do
+        expect { User::Ololo }.to raise_error(NameError, "uninitialized constant User::Ololo")
+      end
+
+      context "connection lost" do
+        before { DB_HELPER.turn_off }
+
+        after { DB_HELPER.turn_on }
+
+        it "returns the model without connection" do
+          expect(User::RawModel.ancestors).to include(Sequel::Model)
+          expect { User::RawModel.all }.to raise_error(Sequel::DatabaseConnectionError)
+        end
+
+        context "connection is back up" do
+          before { DB_HELPER.turn_on }
+
+          it "reconnects the model" do
+            expect(User::RawModel.all).to eq([])
+          end
+        end
+      end
+    end
+
+    context "connection is down" do
+      before do
+        DB_HELPER.turn_off
+
+        NewUser ||= Sequel::ModelGuard(DB[:users])
+      end
+
+      after { DB_HELPER.turn_on }
+
+      it "returns nil" do
+        expect(NewUser::RawModel).to be_nil
+      end
+
+      context "connection is back up" do
+        before { DB_HELPER.turn_on }
+
+        it "returns a functional model" do
+          expect(NewUser::RawModel.all).to eq([])
+        end
+      end
+    end
+  end
 end

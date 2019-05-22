@@ -20,7 +20,6 @@ module Sequel
         @class_body = class_body
         @connected = false
         @model = nil
-        @interfaces = []
       end
 
       # Safely access the model.
@@ -71,12 +70,11 @@ module Sequel
         raise error
       end
 
-      # @param klass [Class]
-      #
       # @api private
       # @since 0.1.0
-      def register_interface(klass)
-        @interfaces << klass
+      def raw_model
+        try_instantiate_model if @model.nil?
+        @model
       end
 
       private
@@ -90,15 +88,18 @@ module Sequel
           @model = Class.new(Sequel::Model(connection[@table_name])).tap do |klass|
             klass.class_eval(&@class_body) unless @class_body.nil?
           end
-
-          @interfaces.each do |klass|
-            klass.const_set("RawModel", @model)
-          end
         else
           @model.dataset = connection[@table_name]
         end
 
         @connected = true
+      end
+
+      # @api private
+      # @since 0.1.0
+      def try_instantiate_model
+        @connection_guard.force_execute { |connection| instantiate_model(connection) }
+      rescue Sequel::DatabaseConnectionError
       end
     end
   end

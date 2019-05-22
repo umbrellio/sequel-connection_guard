@@ -22,9 +22,19 @@ class DatabaseHelper
   rescue Sequel::DatabaseConnectionError
   end
 
-  def clear
+  def migrate_up
+    handle.force_execute { |db| Sequel::TimestampMigrator.new(db, "spec/fixtures/migrations").run }
+  end
+
+  def migrate_down
     handle.force_execute do |db|
       db.tables.each { |t| db.drop_table?(t, cascade: true) }
+    end
+  end
+
+  def clear
+    handle.force_execute do |db|
+      db.tables.each { |t| db.run("DELETE FROM #{t} WHERE true") }
     end
   end
 

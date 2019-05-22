@@ -18,6 +18,7 @@ end
 
 require "bundler/setup"
 require "sequel"
+require "pry"
 
 Dir["#{__dir__}/support/**/*.rb"].each { |f| require f }
 
@@ -29,9 +30,9 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.before(:example) do
-    DB.force_execute { |db| Sequel::TimestampMigrator.new(db, "spec/fixtures/migrations").run }
-  end
+  config.before(:suite) { DB_HELPER.migrate_up }
 
   config.after(:example) { DB_HELPER.clear }
+
+  config.after(:suite) { DB_HELPER.migrate_down }
 end
