@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.name          = "sequel-connection_guard"
   spec.version       = "0.1.0"
   spec.authors       = ["Alexander Komarov"]
-  spec.email         = %w[ak@akxcv.com]
+  spec.email         = %w[ak@akxcv.com oss@umbrellio.biz]
 
   spec.summary       = "A set of tools for working with unreliable databases."
   spec.description   = "Provides an abstraction for working with unreliable databases safely."
