@@ -149,7 +149,7 @@ RSpec.describe Sequel::DatabaseGuard do
       after { DB_HELPER.turn_on }
 
       specify do
-        expect(handle).to be_nil
+        expect { handle }.to raise_error(Sequel::DatabaseConnectionError)
       end
     end
   end
