@@ -11,6 +11,8 @@ AllCops:
     - lib/**/*.rb
     - spec/**/*.rb
     - Gemfile
+    - Rakefile
+    - bin/console
 
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma

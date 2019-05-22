@@ -22,15 +22,15 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = %w[lib]
 
-  spec.add_dependency "sequel"
+  spec.add_dependency "sequel", "> 5.5"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "armitage-rubocop", "~> 0.12"
+  spec.add_development_dependency "rspec", "~> 3.8"
+  spec.add_development_dependency "armitage-rubocop", "~> 0.33"
   spec.add_development_dependency "rubocop-config-umbrellio", "0.69.0rc1"
   spec.add_development_dependency "pg", "~> 1.0"
-  spec.add_development_dependency "pry", "~> 0.12"
+  spec.add_development_dependency "pry"
   spec.add_development_dependency "coveralls", "~> 0.8"
   spec.add_development_dependency "simplecov", "~> 0.16"
 end
