@@ -18,7 +18,7 @@ class DatabaseHelper
 
   def turn_off
     handle.disconnect
-    max_connections.times { |d| connections << Sequel.connect(DATABASE_URL) }
+    max_connections.times { connections << Sequel.connect(DATABASE_URL) }
   rescue Sequel::DatabaseConnectionError
   end
 

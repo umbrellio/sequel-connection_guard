@@ -90,7 +90,8 @@ using the `database_cleaner` gem). You can get a raw handle like this:
 DB.raw_handle
 ```
 
-Note that this will return `nil` if the database is unreachable.
+Beware that this will raise `Sequel::DatabaseConnectionError` if the database is currently
+unreachable.
 
 ### Model guard
 

@@ -52,7 +52,7 @@ module Sequel
       # @api private
       # @since 0.1.0
       def on_alive
-        raise ConfigurationError, "`alive` handler is required!" if @on_alive.nil?
+        raise ConfigurationError, "`alive` handler is required for .safe_execute" if @on_alive.nil?
         @on_alive
       end
     end

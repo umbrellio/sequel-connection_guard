@@ -69,6 +69,8 @@ module Sequel
 
       # A raw connection handle. Intended for use in test environments (e.x. with DatabaseCleaner)
       #
+      # @raise [Sequel::DatabaseConnectionError] if connection is not established
+      #
       # @api public
       # @since 0.1.0
       def raw_handle

@@ -32,10 +32,13 @@ module Sequel
         raise error
       end
 
+      # @raise [Sequel::DatabaseConnectionError] if connection is not established
+      #
       # @api private
       # @since 0.1.0
       def raw_handle
-        @connection if connection_established?
+        return @connection if connection_established?
+        raise Sequel::DatabaseConnectionError
       end
 
       private

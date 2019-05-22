@@ -14,7 +14,7 @@ RSpec.describe Sequel::DatabaseGuard do
           DB.safe_execute {}
         end.to raise_error(
           Sequel::ConnectionGuard::ConfigurationError,
-          "`alive` handler is required!",
+          "`alive` handler is required for .safe_execute",
         )
       end
 
