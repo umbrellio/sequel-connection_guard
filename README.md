@@ -1,7 +1,7 @@
-# sequel_connection-guard
-[![Build Status](https://travis-ci.org/umbrellio/sequel_connection-guard.svg?branch=master)](https://travis-ci.org/umbrellio/sequel_connection-guard)
-[![Coverage Status](https://coveralls.io/repos/github/umbrellio/sequel_connection-guard/badge.svg?branch=master)](https://coveralls.io/github/umbrellio/sequel_connection-guard?branch=master)
-[![Gem Version](https://badge.fury.io/rb/sequel_connection-guard.svg)](https://badge.fury.io/rb/sequel_connection-guard)
+# sequel-connection_guard
+[![Build Status](https://travis-ci.org/umbrellio/sequel-connection_guard.svg?branch=master)](https://travis-ci.org/umbrellio/sequel-connection_guard)
+[![Coverage Status](https://coveralls.io/repos/github/umbrellio/sequel-connection_guard/badge.svg?branch=master)](https://coveralls.io/github/umbrellio/sequel-connection_guard?branch=master)
+[![Gem Version](https://badge.fury.io/rb/sequel-connection_guard.svg)](https://badge.fury.io/rb/sequel-connection_guard)
 
 This Sequel extension provides a set of abstractions for working with databases that might not be
 reachable at any given moment in time.
@@ -16,7 +16,7 @@ Goals:
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sequel_connection-guard'
+gem 'sequel-connection_guard'
 ```
 
 And then execute:
@@ -145,7 +145,7 @@ User = UserGuard::RawModel
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/umbrellio/sequel_connection-guard.
+Bug reports and pull requests are welcome on GitHub at https://github.com/umbrellio/sequel-connection_guard.
 
 ## License
 
