@@ -5,7 +5,7 @@ inherit_gem:
     - lib/rubocop.rspec.yml
 
 AllCops:
-  TargetRubyVersion: 2.5.3
+  TargetRubyVersion: 2.6.3
   Include:
     - sequel-connection_guard.gemspec
     - lib/**/*.rb
