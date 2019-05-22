@@ -11,7 +11,7 @@ services:
 addons:
   postgresql: 9.6
 
-before_install: gem install bundler -v 1.16.1
+before_install: gem install bundler
 before_script:
   - psql -c 'create database sequel_connection_guard;' -U postgres
 script:
