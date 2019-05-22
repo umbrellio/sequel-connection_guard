@@ -11,11 +11,15 @@ class DatabaseHelper
     end
   end
 
+  # Opposite of #turn_off.
+  # Closes all open connections which allows new connections to be established.
   def turn_on
     connections.each(&:disconnect)
     @connections = []
   end
 
+  # Overwhelms the database with open connections so that no new connections could be established.
+  # For purposes of this extension, this is identical to any kind of connection failure.
   def turn_off
     handle.disconnect
     max_connections.times { connections << Sequel.connect(DATABASE_URL) }
