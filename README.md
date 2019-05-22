@@ -6,6 +6,8 @@
 This Sequel extension provides a set of abstractions for working with databases that might not be
 reachable at any given moment in time.
 
+**This gem was only tested against PostgreSQL databases.**
+
 Goals:
 - Allow to bootstrap an application when a database server is down
 - Allow to safely and explicitly access a database
