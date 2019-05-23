@@ -1,0 +1,24 @@
+inherit_gem:
+  rubocop-config-umbrellio: lib/rubocop.yml
+  armitage-rubocop:
+    - lib/rubocop.general.yml
+    - lib/rubocop.rspec.yml
+
+AllCops:
+  TargetRubyVersion: 2.6.3
+  Include:
+    - sequel-connection_guard.gemspec
+    - lib/**/*.rb
+    - spec/**/*.rb
+    - Gemfile
+    - Rakefile
+    - bin/console
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
