@@ -2,16 +2,14 @@
 
 Sequel.migration do
   up do
-    ::DB.force_execute do |db|
-      db.create_table :cookies do
-        primary_key :id
-        column :user_id, :bigint
-        column :value, :text
-      end
+    create_table :cookies do
+      primary_key :id
+      column :user_id, :bigint
+      column :value, :text
     end
   end
 
   down do
-    ::DB.force_execute { |db| db.drop_table :cookies }
+    drop_table :cookies
   end
 end

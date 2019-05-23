@@ -1,17 +1,24 @@
 # frozen_string_literal: true
 
 RSpec.describe Sequel::DatabaseGuard do
+  let(:db_guard) { Sequel::DatabaseGuard.new(DatabaseHelper::DATABASE_URL) }
+
+  def turn_database_off!
+    db_guard.disconnect
+    DB_HELPER.turn_off
+  end
+
   describe "#safe_execute" do
     context "database is up" do
       before do
-        DB.safe_execute do
+        db_guard.safe_execute do
           alive { |db| db[:users].insert(email: "shabolda@example.com", password: "12345") }
         end
       end
 
       it "throws a configuration error if no `alive` handler is provided" do
         expect do
-          DB.safe_execute {}
+          db_guard.safe_execute {}
         end.to raise_error(
           Sequel::ConnectionGuard::ConfigurationError,
           "`alive` handler is required for .safe_execute",
@@ -19,7 +26,7 @@ RSpec.describe Sequel::DatabaseGuard do
       end
 
       it "runs queries" do
-        users = DB.safe_execute do
+        users = db_guard.safe_execute do
           alive { |db| db[:users].all }
         end
 
@@ -31,9 +38,9 @@ RSpec.describe Sequel::DatabaseGuard do
       end
 
       it "reconnects when possible" do
-        DB_HELPER.turn_off
+        turn_database_off!
 
-        result = DB.safe_execute do
+        result = db_guard.safe_execute do
           alive { |db| db[:users].all }
           dead { "error" }
         end
@@ -42,7 +49,7 @@ RSpec.describe Sequel::DatabaseGuard do
 
         DB_HELPER.turn_on
 
-        result = DB.safe_execute do
+        result = db_guard.safe_execute do
           alive { |db| db[:users].all }
         end
 
@@ -61,14 +68,14 @@ RSpec.describe Sequel::DatabaseGuard do
 
       it "does nothing if no `dead` handler is specified" do
         expect do
-          DB.safe_execute do
+          db_guard.safe_execute do
             alive { |db| db[:users].all }
           end
         end.not_to raise_error
       end
 
       it "invokes `dead` handler if specified" do
-        result = DB.safe_execute do
+        result = db_guard.safe_execute do
           alive { |db| db[:users].all }
 
           dead { "connection failure" }
@@ -80,7 +87,7 @@ RSpec.describe Sequel::DatabaseGuard do
       it "does not invoke `alive` handler" do
         alive_spy = spy
 
-        DB.safe_execute do
+        db_guard.safe_execute do
           alive { |_| alive_spy.call }
         end
 
@@ -92,26 +99,26 @@ RSpec.describe Sequel::DatabaseGuard do
   describe "#force_execute" do
     context "database is up" do
       before do
-        DB.force_execute do |db|
+        db_guard.force_execute do |db|
           db[:users].insert(email: "shabolda@example.com", password: "12345")
         end
       end
 
       it "executes the query" do
-        result = DB.force_execute { |db| db[:users].first }
+        result = db_guard.force_execute { |db| db[:users].first }
         expect(result).to include(email: "shabolda@example.com", password: "12345")
       end
 
       it "reconnects when possible" do
-        DB_HELPER.turn_off
+        turn_database_off!
 
         expect do
-          DB.force_execute { |db| db[:users].all }
+          db_guard.force_execute { |db| db[:users].all }
         end.to raise_error(Sequel::DatabaseConnectionError)
 
         DB_HELPER.turn_on
 
-        result = DB.force_execute { |db| db[:users].all }
+        result = db_guard.force_execute { |db| db[:users].all }
 
         expect(result).to contain_exactly(
           a_hash_including(
@@ -128,14 +135,28 @@ RSpec.describe Sequel::DatabaseGuard do
 
       it "fails to connect" do
         expect do
-          DB.force_execute { |db| db[:users].all }
+          db_guard.force_execute { |db| db[:users].all }
         end.to raise_error(Sequel::DatabaseConnectionError)
+      end
+
+      it "reconnects when possible" do
+        expect(db_guard).not_to be_nil
+
+        expect do
+          db_guard.force_execute { |db| db[:users].all }
+        end.to raise_error(Sequel::DatabaseConnectionError)
+
+        DB_HELPER.turn_on
+
+        expect do
+          db_guard.force_execute { |db| db[:users].all }
+        end.not_to raise_error
       end
     end
   end
 
   describe "#raw_handle" do
-    let(:handle) { DB.raw_handle }
+    let(:handle) { db_guard.raw_handle }
 
     context "database is up" do
       it "returns a raw connection handle" do

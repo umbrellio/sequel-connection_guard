@@ -15,7 +15,7 @@ module Sequel
         @initializer = initializer
         @connection = nil
 
-        establish_connection
+        try_establish_connection
       end
 
       # @raise [Sequel::DatabaseConnectionError] connection failure
@@ -23,13 +23,10 @@ module Sequel
       # @api private
       # @since 0.1.0
       def force_execute(&_block)
-        establish_connection if @connection.nil?
+        try_establish_connection if @connection.nil?
         raise Sequel::DatabaseConnectionError unless connection_established?
 
         yield @connection
-      rescue Sequel::DatabaseConnectionError => error
-        @connection = nil
-        raise error
       end
 
       # @raise [Sequel::DatabaseConnectionError] if connection is not established
@@ -37,6 +34,8 @@ module Sequel
       # @api private
       # @since 0.1.0
       def raw_handle
+        try_establish_connection if @connection.nil?
+
         return @connection if connection_established?
         raise Sequel::DatabaseConnectionError
       end
@@ -44,13 +43,13 @@ module Sequel
       private
 
       # @return [void]
-      # @raise [Sequel::DatabaseConnectionError] cannot establish connection
       #
       # @api private
       # @since 0.1.0
-      def establish_connection
+      def try_establish_connection
         @connection = Sequel.connect(@config)
         @initializer&.call(@connection)
+      rescue Sequel::DatabaseConnectionError
       end
 
       # @return [bool]

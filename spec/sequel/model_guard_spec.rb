@@ -1,16 +1,32 @@
 # frozen_string_literal: true
 
 RSpec.describe "model guard" do
-  User = Sequel::ModelGuard(DB[:users]) do
-    one_to_many :cookies, class: "Cookie::RawModel", key: :user_id
+  let(:db_guard) { Sequel::DatabaseGuard.new(DatabaseHelper::DATABASE_URL) }
 
-    def to_s
-      "#{email} #{password}"
+  def turn_database_off!
+    db_guard.disconnect
+    DB_HELPER.turn_off
+  end
+
+  let(:user_guard) do
+    Sequel::ModelGuard(db_guard[:users]) do
+      one_to_many :cookies, class: "Cookie::RawModel", key: :user_id
+
+      def to_s
+        "#{email} #{password}"
+      end
     end
   end
 
-  Cookie = Sequel::ModelGuard(DB[:cookies]) do
-    many_to_one :user
+  let(:cookie_guard) do
+    Sequel::ModelGuard(db_guard[:cookies]) do
+      many_to_one :user
+    end
+  end
+
+  before do
+    stub_const("User", user_guard)
+    stub_const("Cookie", cookie_guard)
   end
 
   describe "#safe_execute" do
@@ -53,7 +69,7 @@ RSpec.describe "model guard" do
       end
 
       it "reconnects when possible" do
-        DB_HELPER.turn_off
+        turn_database_off!
 
         result = User.safe_execute do
           alive(&:all)
@@ -89,7 +105,7 @@ RSpec.describe "model guard" do
     end
 
     context "database is down" do
-      before { DB_HELPER.turn_off }
+      before { turn_database_off! }
 
       after { DB_HELPER.turn_on }
 
@@ -136,7 +152,7 @@ RSpec.describe "model guard" do
       end
 
       it "reconnects when possible" do
-        DB_HELPER.turn_off
+        turn_database_off!
 
         expect do
           User.force_execute(&:all)
@@ -155,11 +171,13 @@ RSpec.describe "model guard" do
     end
 
     context "database is down" do
-      before { DB_HELPER.turn_off }
+      before { turn_database_off! }
 
       after { DB_HELPER.turn_on }
 
       it "fails to connect" do
+        expect(User).not_to be_nil
+
         expect do
           User.force_execute(&:all)
         end.to raise_error(Sequel::DatabaseConnectionError)
@@ -178,18 +196,18 @@ RSpec.describe "model guard" do
       end
 
       context "connection lost" do
-        before { DB_HELPER.turn_off }
-
         after { DB_HELPER.turn_on }
 
         it "returns the model without connection" do
+          expect(User::RawModel.ancestors).to include(Sequel::Model)
+
+          turn_database_off!
+
           expect(User::RawModel.ancestors).to include(Sequel::Model)
           expect { User::RawModel.all }.to raise_error(Sequel::DatabaseConnectionError)
         end
 
         context "connection is back up" do
-          before { DB_HELPER.turn_on }
-
           it "reconnects the model" do
             expect(User::RawModel.all).to eq([])
           end
@@ -199,9 +217,9 @@ RSpec.describe "model guard" do
 
     context "connection is down" do
       before do
-        DB_HELPER.turn_off
+        turn_database_off!
 
-        NewUser ||= Sequel::ModelGuard(DB[:users])
+        NewUser ||= Sequel::ModelGuard(db_guard[:users])
       end
 
       after { DB_HELPER.turn_on }
