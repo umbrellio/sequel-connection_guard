@@ -85,9 +85,8 @@ module Sequel
       # @since 0.1.0
       def instantiate_model(connection)
         if @model.nil?
-          @model = Class.new(Sequel::Model(connection[@table_name])).tap do |klass|
-            klass.class_eval(&@class_body) unless @class_body.nil?
-          end
+          @model = Class.new(Sequel::Model(connection[@table_name]))
+          @model.class_eval(&@class_body) unless @class_body.nil?
         else
           @model.dataset = connection[@table_name]
         end

@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-if ENV["COVER"]
-  require "simplecov"
-  require "coveralls"
+require "simplecov"
+require "coveralls"
 
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-    SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter,
-  ])
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter,
+])
 
-  SimpleCov.minimum_coverage(100)
+SimpleCov.minimum_coverage(100)
 
-  SimpleCov.start do
-    add_filter "spec/"
-  end
+SimpleCov.start do
+  add_filter "spec/"
 end
 
 require "bundler/setup"
