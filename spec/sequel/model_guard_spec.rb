@@ -3,11 +3,6 @@
 RSpec.describe "model guard" do
   let(:db_guard) { Sequel::DatabaseGuard.new(DatabaseHelper::DATABASE_URL) }
 
-  def turn_database_off!
-    db_guard.disconnect
-    DB_HELPER.turn_off
-  end
-
   let(:user_guard) do
     Sequel::ModelGuard(db_guard[:users]) do
       one_to_many :cookies, class: "Cookie::RawModel", key: :user_id
@@ -22,6 +17,11 @@ RSpec.describe "model guard" do
     Sequel::ModelGuard(db_guard[:cookies]) do
       many_to_one :user
     end
+  end
+
+  def turn_database_off!
+    db_guard.disconnect
+    DB_HELPER.turn_off
   end
 
   before do
